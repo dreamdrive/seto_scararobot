@@ -6,8 +6,8 @@
       <geometry>
         <mesh filename="package://seto_scararobot/meshes/base.stl"/>
       </geometry>
-      <material name="dark_gray">
-        <color rgba="0.25 0.25 0.25 2.0"/>
+      <material name="gray">
+        <color rgba="0.5 0.5 0.5 2.0"/>
       </material>
     </visual>
   </link>
@@ -17,8 +17,8 @@
       <geometry>
         <mesh filename="package://seto_scararobot/meshes/arm1.stl"/>
       </geometry>
-      <material name="gray">
-        <color rgba="0.5 0.5 0.5 2.0"/>
+      <material name="green">
+        <color rgba="0.0 1.0 0. 2.0"/>
       </material>
     </visual>
   </link>
@@ -28,8 +28,8 @@
       <geometry>
         <mesh filename="package://seto_scararobot/meshes/arm2.stl"/>
       </geometry>
-      <material name="gray">
-        <color rgba="0.5 0.5 0.5 2.0"/>
+      <material name="red">
+        <color rgba="1.0 0.0 0.0 2.0"/>
       </material>
     </visual>
   </link>

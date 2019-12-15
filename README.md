@@ -30,6 +30,19 @@ $ roslaunch seto_scararobot display_move_test.launch
 ```
 joint_state_publisherの代わりに、move_testノードが立ち上がります。
 
+### 使い方3 (IKで動かす)
+
+1. 下記コマンドをたたく
+
+```
+$ roslaunch seto_scararobot display_move_arm.launch
+```
+
+2. 座標は別ターミナルで、
+```
+rostopic pub /beads_position geometry_msgs/Point　
+```
+と入力してTABを押せば座標を入力＆送信できます。(x,yはmm zは入力しても無効)
 
 ## 予定・課題
 - DINAMIXEL Workbenchとの接続 (＆実機連携)
@@ -41,3 +54,5 @@ joint_state_publisherの代わりに、move_testノードが立ち上がりま�
 - 2019/12/05 : とりあえず、rvizで表示されます。赤い…。
 - 2019/12/08 : kawataさんの修正をマージして、色の問題は修正済み。
 - 2019/12/10 : move_testを作ってみた
+- 2019/12/15 : kawataさんのmove_armを合体
+

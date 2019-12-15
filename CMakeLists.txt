@@ -131,6 +131,11 @@ add_executable(move_test src/move_test.cpp)
 add_dependencies(move_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(move_test ${catkin_LIBRARIES} ${YAML_CPP_LIBRARIES})
 
+add_executable(move_arm src/move_arm.cpp)
+add_dependencies(move_arm ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(move_arm ${catkin_LIBRARIES} ${YAML_CPP_LIBRARIES})
+
+
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/seto_scararobot.cpp
@@ -171,6 +176,13 @@ target_link_libraries(move_test ${catkin_LIBRARIES} ${YAML_CPP_LIBRARIES})
 install(TARGETS move_test
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+
+
+install(TARGETS move_arm
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+
 
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
