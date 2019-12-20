@@ -21,13 +21,16 @@ int main(int argc, char **argv)
     sensor_msgs::JointState scara_arm;
     scara_arm.header.stamp = ros::Time::now();
 
-    scara_arm.name.resize(2);
+    scara_arm.name.resize(3);
     scara_arm.name[0] = "base_to_arm1";
     scara_arm.name[1] = "arm1_to_arm2";
+    scara_arm.name[2] = "end_joint";
 
-    scara_arm.position.resize(2);
+
+    scara_arm.position.resize(3);
     scara_arm.position[0] = -1.0*(float)count/40.0;
     scara_arm.position[1] = 2.0*(float)count/40.0;
+    scara_arm.position[2] = 0.0;
 
     count++;
 

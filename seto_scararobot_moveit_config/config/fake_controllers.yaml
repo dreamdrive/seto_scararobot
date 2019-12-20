@@ -1,0 +1,6 @@
+controller_list:
+  - name: fake_arm_controller
+    joints:
+      - base_to_arm1
+      - arm1_to_arm2
+      - end_joint

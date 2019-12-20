@@ -1,0 +1,135 @@
+<?xml version="1.0" ?>
+<robot name="seto_scararobot">
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <mesh filename="package://seto_scararobot/meshes/base.stl" />
+            </geometry>
+            <material name="gray">
+                <color rgba="0.5 0.5 0.5 2.0" />
+            </material>
+        </visual>
+    </link>
+    <link name="arm1_link">
+        <visual>
+            <geometry>
+                <mesh filename="package://seto_scararobot/meshes/arm1.stl" />
+            </geometry>
+            <material name="green">
+                <color rgba="0.0 1.0 0. 2.0" />
+            </material>
+        </visual>
+    </link>
+    <link name="arm2_link">
+        <visual>
+            <geometry>
+                <mesh filename="package://seto_scararobot/meshes/arm2.stl" />
+            </geometry>
+            <material name="red">
+                <color rgba="1.0 0.0 0.0 2.0" />
+            </material>
+        </visual>
+    </link>
+    <link name="endpoint">
+        <visual>
+            <geometry>
+                <mesh filename="package://seto_scararobot/meshes/endpoint.stl" />
+            </geometry>
+            <material name="blue">
+                <color rgba="0.0 0.0 1.0 2.0" />
+            </material>
+        </visual>
+    </link>
+    <joint name="base_to_arm1" type="revolute">
+        <parent link="base_link" />
+        <child link="arm1_link" />
+        <origin xyz="0 0 0.24400" rpy="0 0 0" />
+        <axis xyz="0 0 1" />
+        <limit effort="1000.0" lower="-3.14159" upper="3.14159" velocity="0.5" />
+    </joint>
+    <joint name="arm1_to_arm2" type="revolute">
+        <parent link="arm1_link" />
+        <child link="arm2_link" />
+        <origin xyz="0 0.09 -0.008" rpy="0 0 0" />
+        <axis xyz="0 0 1" />
+        <limit effort="1000.0" lower="-3.14159" upper="3.14159" velocity="0.5" />
+    </joint>
+    <joint name="end_joint" type="revolute">
+        <parent link="arm2_link" />
+        <child link="endpoint" />
+        <origin xyz="0.0 -0.09 -0.02" rpy="0 0 0" />
+        <axis xyz="0 0 1" />
+        <limit effort="1000.0" lower="-3.14159" upper="3.14159" velocity="0.5" />
+    </joint>
+    
+<transmission name="trans_base_to_arm1">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="base_to_arm1">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="base_to_arm1_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_arm1_to_arm2">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="arm1_to_arm2">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="arm1_to_arm2_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_end_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="end_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="end_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/</robotNamespace>
+        </plugin>
+    </gazebo>
+    <transmission name="trans_base_to_arm1">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="base_to_arm1">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="base_to_arm1_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_arm1_to_arm2">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="arm1_to_arm2">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="arm1_to_arm2_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_end_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="end_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="end_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/</robotNamespace>
+        </plugin>
+    </gazebo>
+</robot>

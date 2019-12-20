@@ -49,21 +49,18 @@ void calculate_arm_pos()
 
   // 20191215 Micchy追加
   float length_goal;
-  float sita1,sita2;
   length_goal =  sqrt(x_2 + y_2);
 
-	if ( ((arm1_length + arm2_length) <= length_goal)  || ((x_2 + y_2) == 0.0)){
-        arm1_sita = 0.0;
-         arm2_sita = 0.0;
-         ROS_INFO("arm1_sita is %lf",arm1_sita);
-         ROS_INFO("arm2_sita is %lf",arm2_sita);
-         return;
-	  }
+	if ( ((arm1_length + arm2_length) <= length_goal)  || (length_goal == 0.0)){
+    arm1_sita = 0.0;
+    arm2_sita = 0.0;
+    ROS_INFO("arm1_sita is %lf",arm1_sita);
+    ROS_INFO("arm2_sita is %lf",arm2_sita);
+    return;
+	}
 
   // 20191215 Micchy追加
-  sita1 = atan2(y,x);
-  sita2 = acosf((length_goal/2) / arm1_length);
-  arm1_sita = sita1 + sita2;
+  arm1_sita = atan2(y,x) + acosf((length_goal/2) / arm1_length);
   arm2_sita = 2 * (asinf((length_goal/2) / arm1_length));
 
   //   if (y >= 0){
@@ -95,12 +92,15 @@ int main(int argc, char **argv)
   sub_beads = nh.subscribe("/beads_position", 60, beadsCallback);
   ros::Rate loop_rate(60);  // 制御周期60Hz
   sensor_msgs::JointState scara_arm;
-  scara_arm.name.resize(2);
+  scara_arm.name.resize(3);
   scara_arm.name[0] = "base_to_arm1";
   scara_arm.name[1] = "arm1_to_arm2";
-  scara_arm.position.resize(2);
+  scara_arm.name[2] = "end_joint";
+
+  scara_arm.position.resize(3);
   scara_arm.position[0] = 0.0;
   scara_arm.position[1] = 0.0;
+  scara_arm.position[2] = 0.0;
   ROS_INFO("seto_scararobot start!");
 
   while(ros::ok()){
@@ -108,6 +108,7 @@ int main(int argc, char **argv)
     calculate_arm_pos();
     scara_arm.position[0] = arm1_sita;
     scara_arm.position[1] = arm2_sita;
+    scara_arm.position[2] = 0.0;
     pub_scara_arm.publish(scara_arm);
     ros::spinOnce();   // コールバック関数を呼ぶ
     loop_rate.sleep();
