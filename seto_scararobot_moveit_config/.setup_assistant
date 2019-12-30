@@ -8,4 +8,4 @@ moveit_setup_assistant_config:
   CONFIG:
     author_name: SETOUCHI ROS STUDY GROUP
     author_email: hirokazu@dream-drive.net
-    generated_timestamp: 1576881756
+    generated_timestamp: 1577674277

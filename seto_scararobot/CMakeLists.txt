@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(seto_scararobot)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++11)
+add_definitions(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -17,10 +17,23 @@ find_package(catkin REQUIRED COMPONENTS
   trajectory_msgs
   cmake_modules
   std_msgs
+  moveit_core
+  moveit_ros_planning
+  moveit_ros_planning_interface
+  moveit_visual_tools
+  control_msgs
+  shape_msgs
+  actionlib
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED
+  system
+  filesystem
+  date_time
+  thread
+)
+
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -109,11 +122,24 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
+#  INCLUDE_DIRS include
 #  LIBRARIES seto_scararobot
-#  CATKIN_DEPENDS roscpp rospy urdf
+  CATKIN_DEPENDS
+    roscpp
+    std_srvs
+    sensor_msgs
+    trajectory_msgs
+    geometry_msgs
+    cmake_modules
+    std_msgs
+    rospy
+    urdf
+    moveit_core
+    moveit_ros_planning_interface
+    control_msgs
+    shape_msgs
+    actionlib
 #  DEPENDS system_lib
-  CATKIN_DEPENDS roscpp std_srvs sensor_msgs trajectory_msgs geometry_msgs cmake_modules std_msgs rospy urdf
 )
 
 ###########
@@ -123,7 +149,6 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -135,6 +160,9 @@ add_executable(move_arm src/move_arm.cpp)
 add_dependencies(move_arm ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(move_arm ${catkin_LIBRARIES} ${YAML_CPP_LIBRARIES})
 
+add_executable(moveit_test src/moveit_test.cpp)
+add_dependencies(moveit_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(moveit_test ${catkin_LIBRARIES} ${YAML_CPP_LIBRARIES})
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -182,7 +210,9 @@ install(TARGETS move_arm
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-
+install(TARGETS moveit_test
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}

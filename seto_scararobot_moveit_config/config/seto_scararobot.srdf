@@ -18,6 +18,11 @@
         <joint name="base_to_arm1" value="0" />
         <joint name="end_joint" value="0" />
     </group_state>
+    <group_state name="test" group="arm">
+        <joint name="arm1_to_arm2" value="2" />
+        <joint name="base_to_arm1" value="-1" />
+        <joint name="end_joint" value="0" />
+    </group_state>
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
     <disable_collisions link1="arm1_link" link2="arm2_link" reason="Adjacent" />
     <disable_collisions link1="arm1_link" link2="base_link" reason="Adjacent" />
