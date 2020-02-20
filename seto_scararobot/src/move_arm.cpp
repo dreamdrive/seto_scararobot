@@ -1,5 +1,6 @@
 // 20191212 kawata氏作成
 // 20191215 Micchy修正
+// Pointをsubscriveして、jointstateをpublish
 
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>

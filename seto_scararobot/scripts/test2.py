@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from time import sleep
 import sys
 import copy
 import rospy
@@ -39,17 +40,98 @@ print ""
 # We can get the joint values from the group and adjust some of the values:
 joint_goal = group.get_current_joint_values()
 
-pose_goal = geometry_msgs.msg.Pose()
-pose_goal.position.x = 0.040995
-pose_goal.position.y = -0.123131
-pose_goal.position.z = 0.216
-pose_goal.orientation.x = 0.0
-pose_goal.orientation.y = 0.0
-pose_goal.orientation.z = 0.517125
-pose_goal.orientation.w = 0.85591
+joint_goal[0] = 0
+joint_goal[1] = -pi/4
 
-group.set_planning_time(10)
-group.set_goal_tolerance(0.1)
+#pose_goal = geometry_msgs.msg.Pose()
+#pose_goal.position.x = 0.132541
+#pose_goal.position.y = 0.00633524
+#pose_goal.position.x = 0.05
+#pose_goal.position.y = 0.05
+
+#pose_goal.position.z = 0.216
+# pose_goal.orientation.x = 0.0
+# pose_goal.orientation.y = 0.0
+# pose_goal.orientation.z = 0.517125
+# pose_goal.orientation.w = 0.85591
+
+#group.set_planning_time(5)
+#group.set_goal_tolerance(0.1)
+#group.set_pose_target(pose_goal)
+
+group.go(joint_goal, wait=True)
+#group.go(wait=True)
+
+# Calling ``stop()`` ensures that there is no residual movement
+group.stop()
+group.clear_pose_targets()
+
+sleep(5)
+
+
+# Sometimes for debugging it is useful to print the entire state of the
+# robot:
+print "============ Printing robot state"
+print robot.get_current_state()
+print ""
+
+# We can get the joint values from the group and adjust some of the values:
+joint_goal = group.get_current_joint_values()
+
+#joint_goal[0] = 0
+#joint_goal[1] = -pi/4
+
+pose_goal = geometry_msgs.msg.Pose()
+pose_goal.position.x = 0.132541
+pose_goal.position.y = 0.00633524
+#pose_goal.position.x = 0.05
+#pose_goal.position.y = 0.05
+
+pose_goal.position.z = 0.216
+# pose_goal.orientation.x = 0.0
+# pose_goal.orientation.y = 0.0
+# pose_goal.orientation.z = 0.517125
+# pose_goal.orientation.w = 0.85591
+
+#group.set_planning_time(5)
+#group.set_goal_tolerance(0.1)
+#group.set_pose_target(pose_goal)
+
+#group.go(joint_goal, wait=True)
+group.go(wait=True)
+
+# Calling ``stop()`` ensures that there is no residual movement
+group.stop()
+group.clear_pose_targets()
+
+sleep(5)
+
+# Sometimes for debugging it is useful to print the entire state of the
+# robot:
+print "============ Printing robot state"
+print robot.get_current_state()
+print ""
+
+# We can get the joint values from the group and adjust some of the values:
+joint_goal = group.get_current_joint_values()
+
+#joint_goal[0] = 0
+#joint_goal[1] = -pi/4
+
+pose_goal = geometry_msgs.msg.Pose()
+pose_goal.position.x = 0.132541
+pose_goal.position.y = 0.00633524
+#pose_goal.position.x = 0.05
+#pose_goal.position.y = 0.05
+
+pose_goal.position.z = 0.216
+# pose_goal.orientation.x = 0.0
+# pose_goal.orientation.y = 0.0
+# pose_goal.orientation.z = 0.517125
+# pose_goal.orientation.w = 0.85591
+
+#group.set_planning_time(5)
+#group.set_goal_tolerance(0.1)
 group.set_pose_target(pose_goal)
 
 #group.go(joint_goal, wait=True)

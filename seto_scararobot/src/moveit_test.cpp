@@ -60,9 +60,9 @@ int main(int argc, char **argv) {
   pose.pose.position.x = 0.00;
   pose.pose.position.y = 0.00;
   pose.pose.position.z = 0.216;
-  pose.pose.orientation.x = 0.0;
-  pose.pose.orientation.y = 0.0;
-  pose.pose.orientation.z = 0.0;
+//  pose.pose.orientation.x = 0.0;
+//  pose.pose.orientation.y = 0.0;
+//  pose.pose.orientation.z = 0.0;
   pose.pose.orientation.w = 1.0;
   arm.setPoseTarget(pose);
   if (!arm.move()) {

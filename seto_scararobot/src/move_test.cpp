@@ -1,3 +1,6 @@
+// 適当なjoint_stateを吐き出し続けるテストプログラム
+// rviz上でロボットアームがクルクル回る
+
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>
 #include <string>

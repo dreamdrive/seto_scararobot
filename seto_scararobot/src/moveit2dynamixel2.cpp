@@ -1,7 +1,7 @@
 //
 // moveitのjoint_statesをSubscribeして、1ポーズのjoint_trajectoryに変換
 // "/dynamixel_workbench/joint_trajectory"にPublish
-// って感じの強引なノード
+// って感じの強引なノード(joint_stateを反映する)
 //
 
 #include "ros/ros.h"
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
   ros::NodeHandle nh;                             // ノードハンドラ
 
   ros::Subscriber sub_joints;                     // サブスクライバの作成
-  sub_joints = nh.subscribe("/joint_states", 1, monitorJointState_callback);    // moveitから取る
+  sub_joints = nh.subscribe("/joint_states", 1, monitorJointState_callback);    // moveit_demoが吐き出すjoint_stateから抜き取る
 
   ros::Publisher arm_pub;                         //パブリッシャの作成
   arm_pub = nh.advertise<trajectory_msgs::JointTrajectory>("/dynamixel_workbench/joint_trajectory",1);

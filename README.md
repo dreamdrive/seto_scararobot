@@ -71,12 +71,27 @@ $ roslaunch seto_scararobot_moveit_config demo.launch
 $ rosrun seto_scararobot moveit2dynamixel2
 ```
 
+### 使い方7 (ロボットアームを動かす&RVIZで確認 ※実機が必要です。)
+
+1. 下記コマンドをたたく
+
+```
+$ roslaunch seto_scararobot_dynamixel dynamixel_controllers_rviz.launch 
+$ roslaunch seto_scararobot display_move_test2.launch
+```
+2. 座標は別ターミナルで、
+```
+rostopic pub /beads_position geometry_msgs/Point　
+```
+と入力してTABを押せば座標を実行できます。(x,yはmm zは入力しても無効)
+
 ## 予定・課題
 - DINAMIXEL Workbenchとの接続 (＆実機連携) 実機完成後
 - MoveItとの連携
 - エンドエフェクタのコントロールは要検討（本パッケージ未実装）
 - 上位ノードについては要検討（従来のビーズセッターのプログラムとのゲートウェイノード）
 - MoveItで、座標指定して動かすソースが動いていない(moveit_test.cpp,test2.py,どちらも。誰かhelp!)
+- 実機を動かすときはFTDIのレイテンシタイマに注意 ( https://woodencaliper.hatenablog.com/entry/2018/06/30/172643 )
 
 ## 履歴
 - 2019/12/05 :  とりあえず、rvizで表示されます。赤い…。
@@ -86,4 +101,5 @@ $ rosrun seto_scararobot moveit2dynamixel2
 - 2019/12/21 :  MoveItで動かせるようにしてみた。／ディレクトリ構造を修正しています。／STLファイルの軽量化／目標点に架空のジョイント追加
 - 2020/01/26 :  Dynamixel Workbench Controllersで、アームのサーボと通信可能に
                 実機に合わせてurdfのjointの回転方向を整頓
+- 2020/02/20 :  先日のもくもく会の進捗を反映＆使い方7を追加
 
