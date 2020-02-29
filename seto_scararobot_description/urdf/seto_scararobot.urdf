@@ -1,45 +1,84 @@
 <?xml version="1.0" ?>
 <robot name="seto_scararobot">
+
+    <link name="world"/>
+
     <link name="base_link">
         <visual>
             <geometry>
-                <mesh filename="package://seto_scararobot/meshes/base.stl" />
+                <mesh filename="package://seto_scararobot_description/meshes/base.stl" />
             </geometry>
             <material name="gray">
                 <color rgba="0.5 0.5 0.5 2.0" />
             </material>
         </visual>
+        <inertial>
+            <origin xyz="0.00003 -0.00017 0.066228" rpy="0 0 0"/>       <!-- Center of gravity (m) -->
+            <mass value="2.935"/>                                       <!-- mass (kg) -->
+            <inertia ixx="725.3" ixy="0.002201" ixz="-0.01514"
+                    iyy="518.7" iyz="0.9947"
+                    izz="868.9"/>                                       <!-- inertia (kg.m^2) -->
+        </inertial>
     </link>
+
     <link name="arm1_link">
         <visual>
             <geometry>
-                <mesh filename="package://seto_scararobot/meshes/arm1.stl" />
+                <mesh filename="package://seto_scararobot_description/meshes/arm1.stl" />
             </geometry>
             <material name="green">
                 <color rgba="0.0 1.0 0. 2.0" />
             </material>
         </visual>
+        <inertial>
+            <origin xyz="0 0.0451 -0.004" rpy="0 0 0"/>                 <!-- Center of gravity (m) -->
+            <mass value="0.042"/>                                       <!-- mass (kg) -->
+            <inertia ixx="0.621" ixy="0" ixz="0"
+                    iyy="0.07151" iyz="0.002973"
+                    izz="0.688"/>                                       <!-- inertia (kg.m^2) -->
+        </inertial>
     </link>
+
     <link name="arm2_link">
         <visual>
             <geometry>
-                <mesh filename="package://seto_scararobot/meshes/arm2.stl" />
+                <mesh filename="package://seto_scararobot_description/meshes/arm2.stl" />
             </geometry>
             <material name="red">
                 <color rgba="1.0 0.0 0.0 2.0" />
             </material>
         </visual>
+        <inertial>
+            <origin xyz="-0.004448 -0.025191 -0.056949" rpy="0 0 0"/>   <!-- Center of gravity (m) -->
+            <mass value="0.221"/>                                       <!-- mass (kg) -->
+            <inertia ixx="10.39" ixy="-0.3337" ixz="-0.3772"
+                    iyy="5.693" iyz="-3.025"
+                    izz="5.866"/>                                       <!-- inertia (kg.m^2) -->
+        </inertial>
     </link>
+    
     <link name="endpoint">
         <visual>
             <geometry>
-                <mesh filename="package://seto_scararobot/meshes/endpoint.stl" />
+                <mesh filename="package://seto_scararobot_description/meshes/endpoint.stl" />
             </geometry>
             <material name="blue">
                 <color rgba="0.0 0.0 1.0 2.0" />
             </material>
         </visual>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>                           <!-- Center of gravity (m) -->
+            <mass value="0"/>                                           <!-- mass (kg) -->
+            <inertia ixx="0" ixy="0" ixz="0"
+                    iyy="0" iyz="0"
+                    izz="0"/>                                           <!-- inertia (kg.m^2) -->
+        </inertial>
     </link>
+
+    <joint name="fixed" type="fixed">
+        <parent link="world"/>
+        <child link="base_link"/>
+    </joint>
     <joint name="base_to_arm1" type="revolute">
         <parent link="base_link" />
         <child link="arm1_link" />
@@ -132,4 +171,15 @@
             <robotNamespace>/</robotNamespace>
         </plugin>
     </gazebo>
+
+    <gazebo reference="base_link">
+        <material>Gazebo/gray</material>
+    </gazebo>
+    <gazebo reference="arm1_link">
+        <material>Gazebo/green</material>
+    </gazebo>
+    <gazebo reference="arm2_link">
+        <material>Gazebo/red</material>
+    </gazebo>
+
 </robot>

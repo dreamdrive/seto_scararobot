@@ -1,0 +1,11 @@
+<launch>
+
+    <param name="robot_description" textfile="$(find seto_scararobot_description)/urdf/seto_scararobot.urdf" />
+
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find seto_scararobot_description)/launch/seto_scararobot.rviz" />
+
+	<!-- IKを起動し、joint_trajectryを吐き出す、別途Dynamixel Workbench controllerが起動することで、ハードが動く、Jointstateはハードからもらう -->
+	<node name="move_arm_dynamixel" pkg="seto_scararobot" type="move_arm_dynamixel" />
+</launch>

@@ -1,0 +1,10 @@
+<launch>
+	<param name="robot_description" textfile="$(find seto_scararobot_description)/urdf/seto_scararobot.urdf" />	
+
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find seto_scararobot_description)/launch/seto_scararobot.rviz" />
+
+	<!-- move_testノードを起動 クルクル回るjointstateを吐き出す  -->
+	<node name="move_test" pkg="seto_scararobot" type="move_test" />
+</launch>
