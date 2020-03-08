@@ -76,7 +76,6 @@
     </link>
     
     <link name="endpoint"> <!-- Control POINT !!!!!! -->
-        
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0" />            <!-- Center of gravity (m) -->
             <mass value = "0.001" />                      <!-- mass (kg) -->
