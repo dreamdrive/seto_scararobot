@@ -42,21 +42,10 @@ int main(int argc, char **argv) {
 
   ros::Duration(0.5).sleep();
 
-  //ポーズ "test" に移動する    これは実行可能 ☆☆☆
-  ROS_INFO("Moving to test pose[START]");
-  arm.setNamedTarget("test");
-  if (!arm.move()) {
-    ROS_WARN("Could not move to prepare pose");
-    return 1;
-  }
-  ROS_INFO("Moved to test pose [END]");
-
-  ros::Duration(0.5).sleep();
-
   // X,Y,Z = (0,0,0)の座標に移動　　　これが実行出来ない ★★★
   ROS_INFO("Moving to ZAHYO! [START]");
   geometry_msgs::PoseStamped pose;
-  pose.header.frame_id = "base_link";
+  pose.header.frame_id = "world";
   pose.pose.position.x = 0.00;
   pose.pose.position.y = 0.00;
   pose.pose.position.z = 0.216;

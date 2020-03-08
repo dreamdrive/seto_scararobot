@@ -1,11 +1,11 @@
 moveit_setup_assistant_config:
   URDF:
-    package: seto_scararobot
-    relative_path: urdf/robo.urdf
+    package: seto_scararobot_description
+    relative_path: urdf/seto_scararobot.urdf
     xacro_args: ""
   SRDF:
     relative_path: config/seto_scararobot.srdf
   CONFIG:
     author_name: SETOUCHI ROS STUDY GROUP
     author_email: hirokazu@dream-drive.net
-    generated_timestamp: 1576881756
+    generated_timestamp: 1583652406

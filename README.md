@@ -13,7 +13,7 @@ $ cd ..
 $ catkin_make
 ```
 
-### 使い方1 (joint_state_publisherでスカラロボットをスライダを動かせます。)
+### 使い方1 (joint_state_publisherでrviz上のスカラロボットをスライダを動かせます。)
 
 1. 下記コマンドを実行
 
@@ -21,7 +21,7 @@ $ catkin_make
 $ roslaunch seto_scararobot_description display.launch
 ```
 
-### 使い方2 (スカラロボットが勝手に動きます。)
+### 使い方2 (rviz上のスカラロボットが勝手に動きます。)
 
 1. 下記コマンドを実行
 
@@ -30,7 +30,7 @@ $ roslaunch seto_scararobot move_test_rviz.launch
 ```
 joint_state_publisherの代わりに、move_testノードが立ち上がります。
 
-### 使い方3 (IKで座標を指定して動かす。)
+### 使い方3 (IKで座標を指定してrviz上のスカラロボットを動かす。)
 
 1. 下記コマンドを実行
 
@@ -40,9 +40,7 @@ $ roslaunch seto_scararobot move_arm_rviz.launch
 rqt_ez_publisherが立ち上がりますので、x,yのスライダを動かすことでスカラロボットが動きます。単位は(mm)です。
 ※ rqt_ez_publisherパッケージをあらかじめインストールしておく必要があります。
 
-
-
-### 使い方4 (MoveItのデモをグリグリ動かす)
+### 使い方4 (MoveItのデモ(rviz)をグリグリ動かす)
 
 1. 下記コマンドを実行
 
@@ -50,7 +48,7 @@ rqt_ez_publisherが立ち上がりますので、x,yのスライダを動かす�
 $ roslaunch seto_scararobot_moveit_config demo.launch 
 ```
 
-### 使い方5 (実機の状態を読み込んで、rvizのモデルに反映させる)
+### 使い方5 (実機の状態を読み込んで、rvizのモデルに反映させる ※実機が必要)
 
 1. 下記コマンドを実行
 
@@ -69,7 +67,9 @@ $ roslaunch seto_scararobot_moveit_config demo.launch
 $ rosrun seto_scararobot moveit2dynamixel2
 ```
 
-### 使い方7 (ロボットアームを動かす&RVIZで確認する。 ※実機が必要)
+※ MoveItから帰ってくるjoint_statesを利用して、強引にjoint_trajectryを生成して動かすので、ガクガク動きます。
+
+### 使い方7 (座標指定して、IKでロボットアームを動かす&RVIZで確認する。 ※実機が必要)
 
 1. 下記コマンドを実行
 
@@ -82,6 +82,15 @@ $ roslaunch seto_scararobot move_arm_hardware.launch
 rostopic pub /beads_position geometry_msgs/Point　
 ```
 と入力してTABを押せば座標を実行できます。(x,yはmm zは入力しても無効)
+
+
+### 使い方8 (実機の代わりにgazeboを起動して、MoveItで操作する)
+
+1. 下記コマンドを実行
+
+```
+$ roslaunch seto_scararobot seto_scara_gazebo_moveit.launch
+```
 
 ## 予定・課題
 * DINAMIXEL Workbenchとの接続 (＆実機連携) 実機完成後
@@ -108,7 +117,8 @@ rostopic pub /beads_position geometry_msgs/Point　
   * seto_scararobotパッケージからurdfとmeshを削除
   * urdfに慣性モーメントのパラメータを追記
   * display.launch をseto_scararobot_descriptionパッケージへ移動
-  * display_move_test2.launch を move_test_rviz.launch にリネーム、およびseto_scararobot_descriptionからの呼び出しに変更
-  * display_move_arm.launch を move_arm_rviz.launch にリネーム、およびseto_scararobot_descriptionからの呼び出しに変更
-  * display_move_test2.launch を move_arm_hardware.launch にリネーム、およびseto_scararobot_descriptionからの呼び出しに変更
-* ...
+  * display_move_test2.launch を move_test_rviz.launch にリネーム
+  * display_move_arm.launch を move_arm_rviz.launch にリネーム
+  * display_move_test2.launch を move_arm_hardware.launch にリネーム
+* 2020/03/08 :  新しいディレクトリパスに合わせて、seto_scararobot_moveit_configを更新
+  * seto_scara_gazebo_moveitを作成。gazeboでスカラロボットを動かしてみる

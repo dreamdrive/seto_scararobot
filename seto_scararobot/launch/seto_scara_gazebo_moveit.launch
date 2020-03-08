@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Load the seto_scararobot URDF model into the parameter server -->
+  <param name="robot_description" textfile="$(find seto_scararobot_description)/urdf/seto_scararobot.urdf" />	
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find seto_scararobot_control)/config/controllers.yaml" command="load"/>
+
+  <!-- Start Gazebo with an empty world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch"/>
+
+  <!-- Spawn a seto_scararobot in Gazebo, taking the description from the parameter server -->
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
+        args="-param robot_description -urdf -model seto_scararobot" output="screen"/>
+
+  <!-- joint_state_publisher -->
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+
+  <!-- controller_manager -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+       args="arm_controller seto_scararobot/joint_state_controller" output="screen"/>
+
+  <!-- robot_state_publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+  </node>
+
+  <!-- move group -->
+  <include file="$(find seto_scararobot_moveit_config)/launch/move_group.launch"/>
+
+  <!-- rviz -->
+  <include file="$(find seto_scararobot_moveit_config)/launch/moveit_rviz.launch">
+    <arg name="rviz_config" value="$(find seto_scararobot)/launch/seto_scara_gazebo_moveit.rviz" />
+  </include>
+</launch>

@@ -22,7 +22,7 @@
   <arg name="gazebo_gui" default="true"/>
   <arg name="paused" default="false"/>
   <!-- By default, use the urdf location provided from the package -->
-  <arg name="urdf_path" default="$(find seto_scararobot)/urdf/robo.urdf"/>
+  <arg name="urdf_path" default="$(find seto_scararobot_description)/urdf/seto_scararobot.urdf"/>
 
   <!-- launch the gazebo simulator and spawn the robot -->
   <include file="$(find seto_scararobot_moveit_config)/launch/gazebo.launch" >
@@ -57,10 +57,13 @@
   </include>  
 
   <!-- Run Rviz and load the default config to see the state of the move_group node -->
+  <!--
   <include file="$(find seto_scararobot_moveit_config)/launch/moveit_rviz.launch">
     <arg name="config" value="true"/>
     <arg name="debug" value="$(arg debug)"/>
   </include>
+-->
+  <include file="$(find seto_scararobot_moveit_config)/launch/moveit_rviz.launch" args="config:=true" />
 
   <!-- If database loading was enabled, start mongodb as well -->
   <include file="$(find seto_scararobot_moveit_config)/launch/default_warehouse_db.launch" if="$(arg db)">
