@@ -13,8 +13,6 @@
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
         args="-param robot_description -urdf -model seto_scararobot" output="screen"/>
 
-  <!-- joint_state_publisher -->
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
 
   <!-- controller_manager -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
@@ -29,6 +27,6 @@
 
   <!-- rviz -->
   <include file="$(find seto_scararobot_moveit_config)/launch/moveit_rviz.launch">
-    <arg name="rviz_config" value="$(find seto_scararobot)/launch/seto_scara_gazebo_moveit.rviz" />
+    <arg name="rviz_config" value="$(find seto_scararobot)/launch/seto_scara_moveit.rviz" />
   </include>
 </launch>

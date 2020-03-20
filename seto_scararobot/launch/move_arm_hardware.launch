@@ -2,6 +2,11 @@
 
     <param name="robot_description" textfile="$(find seto_scararobot_description)/urdf/seto_scararobot.urdf" />
 
+	<include file="$(find seto_scararobot_dynamixel)/launch/dynamixel_controllers_rviz.launch">
+	    <!-- joint_statesにリマップする dynamixelの値をrvizに表示させる-->
+    	<!-- <remap from="dynamixel_workbench/joint_states" to="joint_states"/> -->
+	</include>
+
 	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
 
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find seto_scararobot_description)/launch/seto_scararobot.rviz" />

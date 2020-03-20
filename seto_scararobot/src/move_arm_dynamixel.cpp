@@ -1,6 +1,7 @@
 // 20191212 kawata氏作成
 // 20191215 Micchy修正
 // Pointをsubscriveして、joint_trajectryをpublish
+// 20200317 Micchy 逆運動学でバグ(x<0,y>0の領域)があったので修正
 
 #include "ros/ros.h"
 #include "ros/time.h"
@@ -31,7 +32,6 @@ std_msgs::Float64 joint_pos[2];
 std_msgs::Float64 joint_vel[2];
 std_msgs::Float64 joint_eff[2];
 
-
 void beadsCallback(const geometry_msgs::Point &beads)
 {
 	beads_pos_x = (float)beads.x;
@@ -61,9 +61,17 @@ void calculate_arm_pos(float x,float y)
     return;
 	}
 
+
   // 20191215 Micchy追加
-  arm1_sita = atan2(y,x) + acosf((length_goal/2) / arm1_length);
-  arm2_sita = 2 * (asinf((length_goal/2) / arm1_length));
+  // 20200317 更新
+  if (y > 0){
+    arm1_sita = atan2(y,x) - acosf((length_goal/2) / arm1_length);
+    arm2_sita = -2 * (asinf((length_goal/2) / arm1_length));
+  }
+  else{
+    arm1_sita = atan2(y,x) + acosf((length_goal/2) / arm1_length);
+    arm2_sita = 2 * (asinf((length_goal/2) / arm1_length));
+  }
 
   ROS_INFO("arm1_sita is %lf",arm1_sita);
   ROS_INFO("arm2_sita is %lf",arm2_sita);
@@ -75,7 +83,7 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "move_arm_dynamixel");  // ノードの初期化
   ros::NodeHandle nh; // ノードハンドラ
 
-  float tmp_beads_pos_x , tmp_beads_pos_y ,old_beads_pos_x,old_beads_pos_y;
+  float tmp_beads_pos_x , tmp_beads_pos_y ,old_beads_pos_x,old_beads_pos_y,old_arm1_sita,old_arm2_sita;
 
   //パブリッシャの作成
   ros::Publisher pub_scara_arm_goal;
@@ -108,16 +116,25 @@ int main(int argc, char **argv)
   jtp0.joint_names.resize(2);                     // 関節名をセット
   jtp0.joint_names[0] ="base_to_arm1";
   jtp0.joint_names[1] ="arm1_to_arm2";
-  jtp0.points.resize(1);                          // ポーズは1つ
+  jtp0.points.resize(2);                          // ポーズは2つ
   jtp0.points[0].positions.resize(2);             // ポーズ→positionsを2個設定  
   jtp0.points[0].velocities.resize(2);            // ポーズ→velocitiesを2個設定  
   jtp0.points[0].accelerations.resize(2);         // ポーズ→accelerationsを2個設定  
   jtp0.points[0].effort.resize(2);                // ポーズ→effortを2個設定  
+  jtp0.points[1].positions.resize(2);             // ポーズ→positionsを2個設定  
+  jtp0.points[1].velocities.resize(2);            // ポーズ→velocitiesを2個設定  
+  jtp0.points[1].accelerations.resize(2);         // ポーズ→accelerationsを2個設定  
+  jtp0.points[1].effort.resize(2);                // ポーズ→effortを2個設定  
 
   // 原点ポーズをセット
   jtp0.points[0].positions[0] = 0.0;
   jtp0.points[0].positions[1] = 0.0;
-  jtp0.points[0].time_from_start = ros::Duration(0.1);  //実行時間0.1sec
+  jtp0.points[0].time_from_start = ros::Duration(0.0);  //実行時間0.0sec
+  jtp0.points[1].positions[0] = 0.0;
+  jtp0.points[1].positions[1] = 0.0;
+  jtp0.points[1].time_from_start = ros::Duration(1.0);  //実行時間1.0sec
+  old_arm1_sita = 0.0;
+  old_arm2_sita = 0.0;
 
   ROS_INFO("seto_scararobot start!");
 
@@ -131,8 +148,10 @@ int main(int argc, char **argv)
       scara_arm.header.stamp = ros::Time::now();
 
       calculate_arm_pos(beads_pos_x,beads_pos_y);
-      jtp0.points[0].positions[0] = arm1_sita;
-      jtp0.points[0].positions[1] = arm2_sita;
+      jtp0.points[0].positions[0] = old_arm1_sita;
+      jtp0.points[0].positions[1] = old_arm2_sita;
+      jtp0.points[1].positions[0] = arm1_sita;
+      jtp0.points[1].positions[1] = arm2_sita;
 
       scara_arm.position[0] = arm1_sita;
       scara_arm.position[1] = arm2_sita;
@@ -144,6 +163,9 @@ int main(int argc, char **argv)
     }
     old_beads_pos_x = tmp_beads_pos_x;
     old_beads_pos_y = tmp_beads_pos_y;
+    old_arm1_sita = arm1_sita;
+    old_arm2_sita = arm2_sita;
+
     // ----変更があったときだけpublish -----------------------
 
     ros::spinOnce();   // コールバック関数を呼ぶ

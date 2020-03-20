@@ -1,6 +1,9 @@
 // 20191212 kawata氏作成
 // 20191215 Micchy修正
 // Pointをsubscriveして、jointstateをpublish
+//
+// move_test2
+//
 
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>
@@ -61,8 +64,15 @@ void calculate_arm_pos()
 	}
 
   // 20191215 Micchy追加
-  arm1_sita = atan2(y,x) + acosf((length_goal/2) / arm1_length);
-  arm2_sita = 2 * (asinf((length_goal/2) / arm1_length));
+  // 20200317 更新
+  if (y > 0){
+    arm1_sita = atan2(y,x) - acosf((length_goal/2) / arm1_length);
+    arm2_sita = -2 * (asinf((length_goal/2) / arm1_length));
+  }
+  else{
+    arm1_sita = atan2(y,x) + acosf((length_goal/2) / arm1_length);
+    arm2_sita = 2 * (asinf((length_goal/2) / arm1_length));
+  }
 
   //   if (y >= 0){
 	//     arm1_sita = acosf( (x_2 + y_2 + arm1_length_2 - arm2_length_2) / (2 * arm1_length * sqrt((x_2 + y_2))) ) + atan2(y,x);

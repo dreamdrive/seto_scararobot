@@ -1,5 +1,8 @@
 // 適当なjoint_stateを吐き出し続けるテストプログラム
 // rviz上でロボットアームがクルクル回る
+//
+// move_test1
+//
 
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>
@@ -28,7 +31,6 @@ int main(int argc, char **argv)
     scara_arm.name[0] = "base_to_arm1";
     scara_arm.name[1] = "arm1_to_arm2";
     scara_arm.name[2] = "end_joint";
-
 
     scara_arm.position.resize(3);
     scara_arm.position[0] = -1.0*(float)count/40.0;

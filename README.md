@@ -26,7 +26,7 @@ $ roslaunch seto_scararobot_description display.launch
 1. 下記コマンドを実行
 
 ```
-$ roslaunch seto_scararobot move_test_rviz.launch
+$ roslaunch seto_scararobot move_test1_rviz.launch
 ```
 joint_state_publisherの代わりに、move_testノードが立ち上がります。
 
@@ -35,7 +35,7 @@ joint_state_publisherの代わりに、move_testノードが立ち上がりま�
 1. 下記コマンドを実行
 
 ```
-$ roslaunch seto_scararobot move_arm_rviz.launch
+$ roslaunch seto_scararobot move_test2_rviz.launch
 ```
 rqt_ez_publisherが立ち上がりますので、x,yのスライダを動かすことでスカラロボットが動きます。単位は(mm)です。
 ※ rqt_ez_publisherパッケージをあらかじめインストールしておく必要があります。
@@ -48,16 +48,15 @@ rqt_ez_publisherが立ち上がりますので、x,yのスライダを動かす�
 $ roslaunch seto_scararobot_moveit_config demo.launch 
 ```
 
-### 使い方5 (実機の状態を読み込んで、rvizのモデルに反映させる ※実機が必要)
+### 使い方5 (実機の状態をrvizに表示させる。) ※実機が必要
 
 1. 下記コマンドを実行
 
 ```
-$ roslaunch seto_scararobot_dynamixel dynamixel_controllers_rviz.launch 
-$ roslaunch seto_scararobot_description display_no_pub_jointstate.launch
+$ roslaunch seto_scararobot_description display_dynamixel_sync.launch
 ```
 
-### 使い方6 (MoveItのデモを実機に連動させて動作させる。 ※実機が必要)
+### 使い方6 (MoveItのデモを実機に連動させて動作させる。) ※実機が必要
 
 1. 下記コマンドを実行
 
@@ -69,27 +68,57 @@ $ rosrun seto_scararobot moveit2dynamixel2
 
 ※ MoveItから帰ってくるjoint_statesを利用して、強引にjoint_trajectryを生成して動かすので、ガクガク動きます。
 
-### 使い方7 (座標指定して、IKでロボットアームを動かす&RVIZで確認する。 ※実機が必要)
+### 使い方7 (MoveItのデモを実機に連動させて動作させる。【開発中】) ※実機が必要
 
 1. 下記コマンドを実行
 
 ```
-$ roslaunch seto_scararobot_dynamixel dynamixel_controllers_rviz.launch
+$ roslaunch seto_scararobot seto_scara_moveit_hardware.launch
+```
+
+【開発中】です。
+
+### 使い方9 (実機の代わりにgazeboを起動して、MoveItで操作する)
+
+1. 下記コマンドを実行
+
+```
+$ roslaunch seto_scararobot seto_scara_moveit_gazebo.launch
+```
+こちらは動作します。
+
+### 使い方10 (座標指定して、IKでロボットアームを動かす&RVIZで確認する。【本命】) ※実機が必要
+
+1. 下記コマンドを実行
+
+```
 $ roslaunch seto_scararobot move_arm_hardware.launch
 ```
-2. 座標は別ターミナルで、
+2. 別ターミナルで、
 ```
-rostopic pub /beads_position geometry_msgs/Point　
+$ rosrun seto_scararobot test_arm.py
 ```
-と入力してTABを押せば座標を実行できます。(x,yはmm zは入力しても無効)
+で、テスト動作
 
-
-### 使い方8 (実機の代わりにgazeboを起動して、MoveItで操作する)
+### 使い方11 (座標指定して、IKでgazenoのロボットアームを動かす&RVIZで確認する。【本命】)
 
 1. 下記コマンドを実行
 
 ```
-$ roslaunch seto_scararobot seto_scara_gazebo_moveit.launch
+$ roslaunch seto_scararobot move_arm_gazebo.launch
+```
+2. 別ターミナルで、
+```
+$ rosrun seto_scararobot test_arm.py
+```
+で、テスト動作
+
+
+### FTDIドライバのレイテンシタイマーの変更
+
+```
+ $ sudo chmod a+w /sys/bus/usb-serial/devices/ttyUSB0/latency_timer
+ $ echo 1 > /sys/bus/usb-serial/devices/ttyUSB0/latency_timer
 ```
 
 ## 予定・課題
@@ -122,3 +151,4 @@ $ roslaunch seto_scararobot seto_scara_gazebo_moveit.launch
   * display_move_test2.launch を move_arm_hardware.launch にリネーム
 * 2020/03/08 :  新しいディレクトリパスに合わせて、seto_scararobot_moveit_configを更新
   * seto_scara_gazebo_moveitを作成。gazeboでスカラロボットを動かしてみる
+* 2020/03/20 :  move_arm_gazebo.launch と move_arm_hardware.launch を更新

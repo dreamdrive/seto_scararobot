@@ -1,6 +1,11 @@
 <launch>
     <param name="robot_description" textfile="$(find seto_scararobot_description)/urdf/seto_scararobot.urdf" />
 
+	<include file="$(find seto_scararobot_dynamixel)/launch/dynamixel_controllers_rviz.launch">
+	    <!-- joint_statesにリマップする dynamixelの値をrvizに表示させる-->
+    	<!-- <remap from="dynamixel_workbench/joint_states" to="joint_states"/> -->
+	</include>
+    
     <!-- send fake joint values -->
     <!--
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">

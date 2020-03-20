@@ -5,10 +5,8 @@
 
 base_to_arm1:
   ID: 2
- # Profile_Velocity: 64
   # ちょっと遅く・・・XL430のスペック的には265が最大
 arm1_to_arm2:
   ID: 3
-  #Profile_Velocity: 64
   # ちょっと遅く・・・XL430のスペック的には265が最大
 

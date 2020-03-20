@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Load the seto_scararobot URDF model into the parameter server -->
+  <param name="robot_description" textfile="$(find seto_scararobot_description)/urdf/seto_scararobot.urdf" />	
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find seto_scararobot_control)/config/controllers2.yaml" command="load"/>
+
+  <!-- Start Gazebo with an empty world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch"/>
+
+  <!-- Spawn a seto_scararobot in Gazebo, taking the description from the parameter server -->
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
+        args="-param robot_description -urdf -model seto_scararobot" output="screen"/>
+
+  <!-- controller_manager -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+       args="arm_controller seto_scararobot/joint_state_controller" output="screen"/>
+
+  <!-- robot_state_publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+  </node>
+
+  <!-- rviz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find seto_scararobot_description)/launch/seto_scararobot.rviz" />
+
+	<node name="move_arm_dynamixel" pkg="seto_scararobot" type="move_arm_dynamixel">
+      <remap from="/dynamixel_workbench/joint_trajectory" to="/arm_controller/command"/>
+  </node>
+
+</launch>
