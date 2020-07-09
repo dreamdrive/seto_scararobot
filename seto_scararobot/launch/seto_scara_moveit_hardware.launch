@@ -1,37 +1,33 @@
-<!-- 未完成 -->
-
 <?xml version="1.0"?>
+<!-- 未完成 -->
+<!-- 
+
+イメージ
+
+Moveit
+↓
+↓ FollowJointTrajectory　(action_libメッセージ)
+↓
+seto_stararobot_control_node (未実装 !!!!!!!!!!!!!!!!!!!!!)
+↓
+↓ JointTrajectory (Topicメッセージ)
+↓
+dynamixel Workbench controller
+↓
+↓ RS232C
+↓
+Dynamixel
+
+-->
 <launch>
   <!-- Load the seto_scararobot URDF model into the parameter server -->
   <param name="robot_description" textfile="$(find seto_scararobot_description)/urdf/seto_scararobot.urdf" />	
 
-  <!-- Load joint controller configurations from YAML file to parameter server -->
-  <rosparam file="$(find seto_scararobot_moveit_config)/config/ros_controllers.yaml" command="load"/>
-
-	<include file="$(find seto_scararobot_dynamixel)/launch/dynamixel_controllers_rviz.launch">
-	    <!-- joint_statesにリマップする dynamixelの値をrvizに表示させる-->
-    	<remap from="dynamixel_workbench/joint_states" to="joint_states"/>
-      <!-- ros_controlをdynamixel workbenchにremap出来るかな？ -->
-      <remap from="/arm_controller/command" to="/dynamixel_workbench/joint_trajectory"/>
-	</include>
-
-  <!-- Start Gazebo with an empty world -->
-<!--
-  <include file="$(find gazebo_ros)/launch/empty_world.launch"/>
--->
-
-  <!-- Spawn a seto_scararobot in Gazebo, taking the description from the parameter server -->
-<!--
-    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
-        args="-param robot_description -urdf -model seto_scararobot" output="screen"/>
--->
-
-  <!-- controller_manager -->
-  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-       args="arm_controller seto_scararobot/joint_state_controller" output="screen"/>
+	<include file="$(find seto_scararobot_dynamixel)/launch/dynamixel_controllers.launch" />
 
   <!-- robot_state_publisher -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+      <remap from="joint_states" to="/dynamixel_workbench/joint_states"/>
   </node>
 
   <!-- move group -->

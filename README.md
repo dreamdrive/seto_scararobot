@@ -123,7 +123,7 @@ $ rosrun seto_scararobot test_arm.py
 
 ## 予定・課題
 * DINAMIXEL Workbenchとの接続 (＆実機連携) 実機完成後
-* MoveItとの連携
+* MoveItとの連携実機
 * エンドエフェクタのコントロールは要検討（本パッケージ未実装）
 * 上位ノードについては要検討（従来のビーズセッターのプログラムとのゲートウェイノード）
 * MoveItで、座標指定して動かすソースが動いていない(moveit_test.cpp,test2.py,どちらも。誰かhelp!)
@@ -152,3 +152,4 @@ $ rosrun seto_scararobot test_arm.py
 * 2020/03/08 :  新しいディレクトリパスに合わせて、seto_scararobot_moveit_configを更新
   * seto_scara_gazebo_moveitを作成。gazeboでスカラロボットを動かしてみる
 * 2020/03/20 :  move_arm_gazebo.launch と move_arm_hardware.launch を更新
+* 2020/07/09 :  hardware_interfaceをPositionJointInterfaceに変更

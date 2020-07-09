@@ -1,19 +1,16 @@
+<?xml version="1.0"?>
 <launch>
+
+    <!-- Load the seto_scararobot URDF model into the parameter server -->
     <param name="robot_description" textfile="$(find seto_scararobot_description)/urdf/seto_scararobot.urdf" />
 
-	<include file="$(find seto_scararobot_dynamixel)/launch/dynamixel_controllers_rviz.launch">
-	    <!-- joint_statesにリマップする dynamixelの値をrvizに表示させる-->
-    	<!-- <remap from="dynamixel_workbench/joint_states" to="joint_states"/> -->
-	</include>
+    <!-- dynamixel controllers -->
+	<include file="$(find seto_scararobot_dynamixel)/launch/dynamixel_controllers.launch" />
     
-    <!-- send fake joint values -->
-    <!--
-    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
-        <param name="use_gui" value="TRUE"/>
+    <!-- robot_state_publisher -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+        <remap from="joint_states" to="/dynamixel_workbench/joint_states"/>
     </node>
-    -->
-    <!-- Combine joint values -->
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
 
     <!-- Show in Rviz   -->
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find seto_scararobot_description)/launch/seto_scararobot.rviz" />

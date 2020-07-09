@@ -4,7 +4,7 @@
   <param name="robot_description" textfile="$(find seto_scararobot_description)/urdf/seto_scararobot.urdf" />	
 
   <!-- Load joint controller configurations from YAML file to parameter server -->
-  <rosparam file="$(find seto_scararobot_control)/config/controllers.yaml" command="load"/>
+  <rosparam file="$(find seto_scararobot_control)/config/controllers_moveit.yaml" command="load"/>
 
   <!-- Start Gazebo with an empty world -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch"/>
@@ -12,7 +12,6 @@
   <!-- Spawn a seto_scararobot in Gazebo, taking the description from the parameter server -->
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
         args="-param robot_description -urdf -model seto_scararobot" output="screen"/>
-
 
   <!-- controller_manager -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
