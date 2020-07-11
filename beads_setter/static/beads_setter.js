@@ -10,7 +10,7 @@ var is8x8 = true; //8x8モードの場合はtrue、falseで29x29モード
 var BackgroundColor = '#DDDDDD'; //背景色
 var GridColor = '#BBBBBB'; //グリッドの色
 
-var DrawAreaX = BeadsSize * 10; //描画可能領域 X座標
+var DrawAreaX = BeadsSize * 0; //描画可能領域 X座標
 var DrawAreaY = 0; //描画可能領域 Y座標
 var DrawAreaW = BeadsSize * 8; //描画可能領域 幅
 var DrawAreaH = BeadsSize * 8; //描画可能領域 高さ
