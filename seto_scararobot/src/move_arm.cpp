@@ -10,6 +10,7 @@
 #include <geometry_msgs/Point.h>
 #include <string>
 #include <math.h>
+#include <std_msgs/String.h>
 
 // アームの長さを入れる(単位はビーズを置く位置（beads.x ,beads.y）と揃える)
 // 現在はmm
@@ -22,25 +23,15 @@ float arm2_sita = 0.0;
 float beads_pos_x = 0.0;
 float beads_pos_y = 0.0;
 
-void beadsCallback(const geometry_msgs::Point &beads)
+const std::string MSG_ARM_WAITING    = "Waiting";
+const std::string MSG_ARM_MOVING    = "Moving";
+const std::string MSG_ARM_GOAL    = "Goal";
+
+void armPositionCallback(const geometry_msgs::Point &beads)
 {
 	beads_pos_x = (float)beads.x;
 	beads_pos_y = (float)beads.y;
-    //ROS_INFO("%lf",beads_pos_x);
-    //ROS_INFO("%lf",beads_pos_y);
 }
-/*
-void init()
-{
-	scara_arm.name.resize(2);
-	scara_arm.name[0] = "base_to_arm1";
-	scara_arm.name[1] = "arm1_to_arm2";
-	scara_arm.position.resize(2);
-	scara_arm.header.stamp = ros::Time::now();
-	scara_arm.position[0] = 0.0;
-	scara_arm.position[1] = 0.0;
-}
-*/
 
 void calculate_arm_pos()
 {
@@ -73,19 +64,6 @@ void calculate_arm_pos()
     arm1_sita = atan2(y,x) + acosf((length_goal/2) / arm1_length);
     arm2_sita = 2 * (asinf((length_goal/2) / arm1_length));
   }
-
-  //   if (y >= 0){
-	//     arm1_sita = acosf( (x_2 + y_2 + arm1_length_2 - arm2_length_2) / (2 * arm1_length * sqrt((x_2 + y_2))) ) + atan2(y,x);
-  //     arm2_sita = atan2( (y - arm1_length * sin(arm1_sita)), (x - (arm1_length * cos(arm1_sita))) ) - arm1_sita;
-  //   }
-  //   else if (y < 0){
-  //     arm1_sita = acosf( ((x_2 + y_2 + arm1_length_2 - arm2_length_2) / (2 * arm1_length * sqrt((x_2 + y_2)) ))) - atan2(y,x);
-  //     arm2_sita = -atan2( (y - arm1_length * sin(arm1_sita)), (x - (arm1_length * cos(arm1_sita))) ) - arm1_sita;
-
-  //     //arm1_sita *= -1.0;
-  //     arm2_sita *= -1.0;
-  //   }
-
   ROS_INFO("arm1_sita is %lf",arm1_sita);
   ROS_INFO("arm2_sita is %lf",arm2_sita);
   return;
@@ -98,11 +76,18 @@ int main(int argc, char **argv)
 
   //パブリッシャの作成
   ros::Publisher pub_scara_arm;
+  ros::Publisher pub_arm_state;
   ros::Subscriber sub_beads;
+  
   pub_scara_arm = nh.advertise<sensor_msgs::JointState>("/joint_states",1);
-  sub_beads = nh.subscribe("/beads_position", 60, beadsCallback);
+  pub_arm_state = nh.advertise<std_msgs::String>("/arm_states",1);
+  sub_beads = nh.subscribe("/arm_positions", 60, armPositionCallback);
+  
   ros::Rate loop_rate(60);  // 制御周期60Hz
+
   sensor_msgs::JointState scara_arm;
+  std_msgs::String arm_state;
+
   scara_arm.name.resize(3);
   scara_arm.name[0] = "base_to_arm1";
   scara_arm.name[1] = "arm1_to_arm2";
@@ -112,7 +97,6 @@ int main(int argc, char **argv)
   scara_arm.position[0] = 0.0;
   scara_arm.position[1] = 0.0;
   scara_arm.position[2] = 0.0;
-  ROS_INFO("seto_scararobot start!");
 
   while(ros::ok()){
     scara_arm.header.stamp = ros::Time::now();
