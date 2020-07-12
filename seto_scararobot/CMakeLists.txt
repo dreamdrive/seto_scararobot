@@ -144,6 +144,10 @@ add_executable(moveit2dynamixel2 src/moveit2dynamixel2.cpp)
 add_dependencies(moveit2dynamixel2 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(moveit2dynamixel2 ${catkin_LIBRARIES} ${YAML_CPP_LIBRARIES})
 
+add_executable(seto_scararobot src/seto_scararobot.cpp)
+add_dependencies(seto_scararobot ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(seto_scararobot ${catkin_LIBRARIES} ${YAML_CPP_LIBRARIES})
+
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/seto_scararobot.cpp
@@ -205,6 +209,10 @@ install(TARGETS moveit2dynamixel2
 
 
 install(DIRECTORY launch config
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
+install(DIRECTORY seto_scararobot
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
