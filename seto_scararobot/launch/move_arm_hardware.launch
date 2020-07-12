@@ -15,7 +15,10 @@
   <!-- rviz -->
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find seto_scararobot_description)/launch/seto_scararobot.rviz" />
 
-  <!-- IKを起動し、joint_trajectryを吐き出す、別途Dynamixel Workbench controllerが起動することで、ハードが動く、Jointstateはハードからもらう -->
+  <!-- アームの制御 -->
   <node name="move_arm_dynamixel" pkg="seto_scararobot" type="move_arm_dynamixel" />
   
+  <!-- 統括コントロール -->
+	<node name="seto_scararobot" pkg="seto_scararobot" type="seto_scararobot"/>
+
 </launch>

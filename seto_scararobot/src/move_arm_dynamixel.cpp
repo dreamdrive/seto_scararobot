@@ -32,12 +32,52 @@ std_msgs::Float64 joint_pos[2];
 std_msgs::Float64 joint_vel[2];
 std_msgs::Float64 joint_eff[2];
 
+#define INPUT_JOINT_NUMBER 2
+std_msgs::String DXJointName[INPUT_JOINT_NUMBER];
+std_msgs::Float64 DXJointPos[INPUT_JOINT_NUMBER];
+
+int step;
+
+enum Step
+{
+    Waiting,
+    Moving,
+    Goal
+};
+
 void beadsCallback(const geometry_msgs::Point &beads)
 {
 	beads_pos_x = (float)beads.x;
 	beads_pos_y = (float)beads.y;
     //ROS_INFO("%lf",beads_pos_x);
     //ROS_INFO("%lf",beads_pos_y);
+}
+
+// コールバックがあるとグローバルに読み込み
+void dynamixelreadCallback(const sensor_msgs::JointState::ConstPtr& DynamixelJointState)
+{
+  int i,j;
+  for(i=0;i<INPUT_JOINT_NUMBER;i++){
+    for(j=0;j<INPUT_JOINT_NUMBER;j++){
+      if(DXJointName[i].data == DynamixelJointState->name[j]){
+        DXJointPos[i].data = DynamixelJointState->position[j];    // ポジション読み出し
+      }
+    }
+  }
+
+  switch (step) {
+    case Waiting:
+      break;
+    case Moving:
+      if(((abs(DXJointPos[0].data - arm1_sita)) < 0.0174533) && ((abs(DXJointPos[1].data - arm2_sita)) < 0.0174533)) step = Goal;
+      // 目標と現在地の誤差が1度以下ならゴールとみなす
+      break;
+    case Goal:
+      step = Waiting;
+      break;
+    default:
+      break;
+  }
 }
 
 void calculate_arm_pos(float x,float y)
@@ -60,7 +100,6 @@ void calculate_arm_pos(float x,float y)
     ROS_INFO("arm2_sita is %lf",arm2_sita);
     return;
 	}
-
 
   // 20191215 Micchy追加
   // 20200317 更新
@@ -85,17 +124,32 @@ int main(int argc, char **argv)
 
   float tmp_beads_pos_x , tmp_beads_pos_y ,old_beads_pos_x,old_beads_pos_y,old_arm1_sita,old_arm2_sita;
 
-  //パブリッシャの作成
+  DXJointName[0].data = "base_to_arm1";
+  DXJointName[1].data = "arm1_to_arm2";
+
+  step = Waiting;
+
+  std_msgs::String ArmStatePub;
+
+  //パブリッシャの作成 (目標地点の垂れ流し)
   ros::Publisher pub_scara_arm_goal;
   pub_scara_arm_goal = nh.advertise<sensor_msgs::JointState>("/seto_scararobot/goal",1);
 
-  //パブリッシャの作成
+  //パブリッシャの作成 (DynamixelWorkBenchへの指示)
   ros::Publisher pub_scara_arm_trajectory;
   pub_scara_arm_trajectory = nh.advertise<trajectory_msgs::JointTrajectory>("/dynamixel_workbench/joint_trajectory",1);
 
-  //サブスクライバの作成
+  //パブリッシャの作成 (状態)
+  ros::Publisher pub_arm_state;
+  pub_arm_state = nh.advertise<std_msgs::String>("/arm_states",1);
+
+  //サブスクライバの作成 (移動先の指示)
   ros::Subscriber sub_beads;
   sub_beads = nh.subscribe("/arm_positions", 60, beadsCallback);
+
+  // サブスクライバ(実機の状態)
+  ros::Subscriber sub_dynamixelread;
+  sub_dynamixelread = nh.subscribe("/dynamixel_workbench/joint_states", 60, dynamixelreadCallback);
 
   ros::Rate loop_rate(60);  // 制御周期60Hz
 
@@ -143,6 +197,8 @@ int main(int argc, char **argv)
     // ----変更があったときだけpublish -----------------------
     tmp_beads_pos_x = beads_pos_x;
     tmp_beads_pos_y = beads_pos_y;
+
+    // 前回の目標値と変更があれば・・・
     if ((tmp_beads_pos_x != old_beads_pos_x)||(tmp_beads_pos_y != old_beads_pos_y)){
       jtp0.header.stamp = ros::Time::now();
       scara_arm.header.stamp = ros::Time::now();
@@ -160,17 +216,33 @@ int main(int argc, char **argv)
       //パブリッシュ (joint_trajectry)
       pub_scara_arm_trajectory.publish(jtp0);
       pub_scara_arm_goal.publish(scara_arm);
+      step = Moving;
     }
+
     old_beads_pos_x = tmp_beads_pos_x;
     old_beads_pos_y = tmp_beads_pos_y;
     old_arm1_sita = arm1_sita;
     old_arm2_sita = arm2_sita;
 
-    // ----変更があったときだけpublish -----------------------
-
     ros::spinOnce();   // コールバック関数を呼ぶ
-    loop_rate.sleep();
 
+    switch (step) {
+      case Waiting:
+        ArmStatePub.data = "Waiting";
+        break;
+      case Moving:
+        ArmStatePub.data = "Moving";
+        break;
+      case Goal:
+        ArmStatePub.data = "Goal";
+        break;
+      default:
+        break;
+    }
+    // 現在の状態をPublish
+    pub_arm_state.publish(ArmStatePub);
+
+    loop_rate.sleep();
   }
   return 0;
 }
