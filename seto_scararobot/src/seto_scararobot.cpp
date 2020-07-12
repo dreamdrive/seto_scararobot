@@ -30,6 +30,8 @@ private:
   const std::string MSG_ENDEFFECTOR_WAITING    = "Waiting";
   const std::string MSG_ENDEFFECTOR_MOVING    = "Moving";
   const std::string MSG_ENDEFFECTOR_GOAL    = "Goal";
+  const std::string MSG_ENDEFFECTOR_GRUB    = "grub";
+  const std::string MSG_ENDEFFECTOR_RELEASE    = "release";
   int step_; //スカラロボットの状態変数
   std::string received_beads_positions; //受け取ったビーズ情報
   std::string received_arm_states; //受け取ったアームの状態
@@ -38,6 +40,8 @@ private:
 
   std::string move_endeffector;
   std::string received_endeffector_states; //受け取ったエンドエフェクタの状態
+
+  std_msgs::String send_msg;
 
   //アームの状態変数
   bool is_arm_waiting_;
@@ -107,6 +111,7 @@ private:
     beads_color1_num = COLOR1_NUM;
     beads_color2_num = COLOR2_NUM;
     beads_color3_num = COLOR3_NUM;
+    send_msg.data = "";
   }
 
   void reset_state()
@@ -278,6 +283,9 @@ public:
 
         case EndEffectorforCatch:
         {
+          //pub_move_endeffector.publish("Grasp");
+          send_msg.data=MSG_ENDEFFECTOR_GRUB;
+          pub_move_endeffector.publish(send_msg);
           step_++;
           ROS_INFO("WaitEndEffectorforCatch");
           break;
@@ -306,7 +314,7 @@ public:
 
         case WaitSetBeads:
         {
-          if(is_endeffector_goal_ == true)
+          if(is_arm_goal_ == true)
           {
             step_++;
             ROS_INFO("EndEffectorforSet");
@@ -316,6 +324,8 @@ public:
 
         case EndEffectorforSet:
         {
+          send_msg.data=MSG_ENDEFFECTOR_RELEASE;
+          pub_move_endeffector.publish(send_msg);
           step_++;
           ROS_INFO("WaitEndEffectorforSet");
           break;
