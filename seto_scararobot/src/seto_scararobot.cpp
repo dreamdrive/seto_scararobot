@@ -72,7 +72,7 @@ private:
   const int OFFSET_X = 0;
   const int OFFSET_Y = 0;
 
-  const double DISTANCE = 10; //ビーズ間の距離（mm）
+  const double DISTANCE = 5; //ビーズ間の距離（mm）
 
   int set_count;
 

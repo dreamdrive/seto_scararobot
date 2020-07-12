@@ -95,7 +95,7 @@ int main(int argc, char **argv)
 
   //サブスクライバの作成
   ros::Subscriber sub_beads;
-  sub_beads = nh.subscribe("/beads_position", 60, beadsCallback);
+  sub_beads = nh.subscribe("/arm_positions", 60, beadsCallback);
 
   ros::Rate loop_rate(60);  // 制御周期60Hz
 
