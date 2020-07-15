@@ -13,6 +13,7 @@ private:
   {
     Initialize,
     WaitBeadsInfo,
+    SearchSetBeads,
     CatchBeads,
     WaitCatchBeads,
     EndEffectorforCatch,
@@ -54,7 +55,8 @@ private:
   
   //色番号
   //beads_setterのカラーコードと一致させておく
-  const int COLOR1 = 0;
+  const int SPACE = 0;
+  const int COLOR1 = 3;
   const int COLOR2 = 1;
   const int COLOR3 = 2;
   
@@ -102,7 +104,7 @@ private:
     is_arm_goal_ = false;
     is_endeffector_waiting_ = true;
     is_endeffector_moving_ = false;
-    is_arm_goal_ = false;
+    is_endeffector_goal_ = false;
     received_beads_positions = "";
     received_arm_states = "";
     received_endeffector_states = "";
@@ -112,6 +114,7 @@ private:
     beads_color2_num = COLOR2_NUM;
     beads_color3_num = COLOR3_NUM;
     send_msg.data = "";
+    arm_positions = {};
   }
 
   void reset_state()
@@ -121,7 +124,7 @@ private:
     is_arm_goal_ = false;
     is_endeffector_waiting_ = true;
     is_endeffector_moving_ = false;
-    is_arm_goal_ = false;
+    is_endeffector_goal_ = false;
   }
 
   void beadsPositionsCallback(const std_msgs::String::ConstPtr &beads_positions)
@@ -137,17 +140,17 @@ private:
     if(received_arm_states == MSG_ARM_GOAL)
     {
       is_arm_goal_ = true;
-      is_arm_waiting_ == true;
+      is_arm_waiting_ = true;
       is_arm_moving_ = false;
     }
     else if(received_arm_states == MSG_ARM_WAITING)
     {
-      is_arm_waiting_ == true;
+      is_arm_waiting_ = true;
       is_arm_moving_ = false;
     }
     else if(received_arm_states == MSG_ARM_MOVING)
     {
-      is_arm_waiting_ == false;
+      is_arm_waiting_ = false;
       is_arm_moving_ = true;
     }
   }
@@ -159,17 +162,17 @@ private:
       if(received_endeffector_states == MSG_ENDEFFECTOR_GOAL)
     {
       is_endeffector_goal_ = true;
-      is_endeffector_waiting_ == true;
+      is_endeffector_waiting_ = true;
       is_endeffector_moving_ = false;
     }
     else if(received_endeffector_states == MSG_ENDEFFECTOR_WAITING)
     {
-      is_endeffector_waiting_ == true;
+      is_endeffector_waiting_ = true;
       is_endeffector_moving_ = false;
     }
     else if(received_endeffector_states == MSG_ENDEFFECTOR_MOVING)
     {
-      is_endeffector_waiting_ == false;
+      is_endeffector_waiting_ = false;
       is_endeffector_moving_ = true;
     }
   }
@@ -245,8 +248,35 @@ public:
           break;
         }
 
+        case SearchSetBeads:
+        {
+          while(arm_positions[set_count] == SPACE)
+          {
+            if(set_count < (arm_positions.size() - 1))
+            {
+              set_count++;
+            }
+            else
+            {
+              break;
+            }
+          }
+          if(set_count > (arm_positions.size() - 1))
+          {
+            ROS_INFO("CheckFinishTask");
+            step_ = CheckFinishTask;
+          }
+          else
+          {
+            ROS_INFO("CatchBeads");
+            step_++;
+          }
+          break;
+        }
+
         case CatchBeads:
         {
+
           if(arm_positions[set_count] == COLOR1)
           {
             arm_position.x = (COLOR1_NUM - beads_color1_num)* DISTANCE;
@@ -344,6 +374,8 @@ public:
         case CheckFinishTask:
         {
           set_count++;
+          ROS_INFO("position:%d", arm_positions.size());
+          ROS_INFO("count:%d", set_count);
           if(set_count >= arm_positions.size())
           {
             step_ = Initialize;
@@ -351,7 +383,7 @@ public:
           else
           {
             reset_state();
-            step_ = CatchBeads;
+            step_ = SearchSetBeads;
           }
           break;
         }
