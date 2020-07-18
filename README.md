@@ -87,32 +87,23 @@ $ roslaunch seto_scararobot seto_scara_moveit_gazebo.launch
 ```
 こちらは動作します。
 
-### 使い方10 (座標指定して、IKでロボットアームを動かす&RVIZで確認する。【本命】) ※実機が必要
+### 使い方10 (ロボットアームをwebアプリから動かす。【本命】) ※実機が必要
 
 1. 下記コマンドを実行
 
 ```
 $ roslaunch seto_scararobot move_arm_hardware.launch
 ```
-2. 別ターミナルで、
-```
-$ rosrun seto_scararobot test_arm.py
-```
-で、テスト動作
+2. webブラウザで[localhost:5000](localhost:5000)にアクセスする
 
-### 使い方11 (座標指定して、IKでgazenoのロボットアームを動かす&RVIZで確認する。【本命】)
+### 使い方11 (gazenoのロボットアームをwebアプリから動かす。【本命】)
 
 1. 下記コマンドを実行
 
 ```
 $ roslaunch seto_scararobot move_arm_gazebo.launch
 ```
-2. 別ターミナルで、
-```
-$ rosrun seto_scararobot test_arm.py
-```
-で、テスト動作
-
+2. webブラウザで[localhost:5000](localhost:5000)にアクセスする
 
 ### FTDIドライバのレイテンシタイマーの変更
 
@@ -153,3 +144,13 @@ $ rosrun seto_scararobot test_arm.py
   * seto_scara_gazebo_moveitを作成。gazeboでスカラロボットを動かしてみる
 * 2020/03/20 :  move_arm_gazebo.launch と move_arm_hardware.launch を更新
 * 2020/07/09 :  hardware_interfaceをPositionJointInterfaceに変更
+* 2020/07/16 :  統括プログラムの作成(kawataさん)
+
+## Author
+
+* 瀬戸内ROS勉強会
+  * https://ros.xrea.jp/
+
+## License
+
+This is under [MIT license](https://en.wikipedia.org/wiki/MIT_License).

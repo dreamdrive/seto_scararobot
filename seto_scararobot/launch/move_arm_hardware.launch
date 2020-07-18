@@ -21,4 +21,10 @@
   <!-- 統括コントロール -->
 	<node name="seto_scararobot" pkg="seto_scararobot" type="seto_scararobot"/>
 
+  <!-- エンドエフェクタ -->
+  <include file="$(find beadsee)/launch/beadsee.launch"/>
+
+  <!-- webサーバーノード起動 -->
+  <node pkg="beads_setter" name="beads_setter" type="beads_setter.py"/>
+
 </launch>
