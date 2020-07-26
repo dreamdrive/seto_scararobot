@@ -65,19 +65,6 @@ void dynamixelreadCallback(const sensor_msgs::JointState::ConstPtr& DynamixelJoi
     }
   }
 
-  switch (step) {
-    case Waiting:
-      break;
-    case Moving:
-      if(((abs(DXJointPos[0].data - arm1_sita)) < 0.0174533) && ((abs(DXJointPos[1].data - arm2_sita)) < 0.0174533)) step = Goal;
-      // 目標と現在地の誤差が1度以下ならゴールとみなす
-      break;
-    case Goal:
-      step = Waiting;
-      break;
-    default:
-      break;
-  }
 }
 
 void calculate_arm_pos(float x,float y)
@@ -119,10 +106,15 @@ void calculate_arm_pos(float x,float y)
 
 int main(int argc, char **argv)
 {
+
+  int flag_wait = 0;
+  int flag_move = 0;
+
+
   ros::init(argc, argv, "move_arm_dynamixel");  // ノードの初期化
   ros::NodeHandle nh; // ノードハンドラ
 
-  float tmp_beads_pos_x , tmp_beads_pos_y ,old_beads_pos_x,old_beads_pos_y,old_arm1_sita,old_arm2_sita;
+  float tmp_beads_pos_x , tmp_beads_pos_y ,old_beads_pos_x=0,old_beads_pos_y=0,old_arm1_sita,old_arm2_sita;
 
   DXJointName[0].data = "base_to_arm1";
   DXJointName[1].data = "arm1_to_arm2";
@@ -151,7 +143,7 @@ int main(int argc, char **argv)
   ros::Subscriber sub_dynamixelread;
   sub_dynamixelread = nh.subscribe("/dynamixel_workbench/joint_states", 60, dynamixelreadCallback);
 
-  ros::Rate loop_rate(60);  // 制御周期60Hz
+  ros::Rate loop_rate(100);  // 制御周期60Hz
 
   // 目標(JointState)を生成
   sensor_msgs::JointState scara_arm;
@@ -217,33 +209,53 @@ int main(int argc, char **argv)
       pub_scara_arm_trajectory.publish(jtp0);
       pub_scara_arm_goal.publish(scara_arm);
       step = Moving;
-    }
+      flag_move = 0;
 
-    old_beads_pos_x = tmp_beads_pos_x;
-    old_beads_pos_y = tmp_beads_pos_y;
-    old_arm1_sita = arm1_sita;
-    old_arm2_sita = arm2_sita;
+      old_beads_pos_x = tmp_beads_pos_x;
+      old_beads_pos_y = tmp_beads_pos_y;
+      old_arm1_sita = arm1_sita;
+      old_arm2_sita = arm2_sita;
+
+
+    }
 
     ros::spinOnce();   // コールバック関数を呼ぶ
 
     switch (step) {
       case Waiting:
-        ArmStatePub.data = "Waiting";
+        if (flag_wait == 0){
+          ArmStatePub.data = "Waiting";
+          // 現在の状態をPublish                (1回だけ)
+          pub_arm_state.publish(ArmStatePub);
+        }
+        flag_wait = 1;
         break;
       case Moving:
-        ArmStatePub.data = "Moving";
-        break;
-      case Goal:
-        ArmStatePub.data = "Goal";
+        flag_wait = 0;
+
+        // Moveingの際、目標と現在地の誤差が1度以下ならゴールとみなす
+        if(((abs(DXJointPos[0].data - arm1_sita)) < 0.0174533) && ((abs(DXJointPos[1].data - arm2_sita)) < 0.0174533)){
+          step = Goal;
+          ArmStatePub.data = "Goal";
+          pub_arm_state.publish(ArmStatePub);
+          step = Waiting;
+          flag_move = 0;
+          break;
+        }
+        if (flag_move == 0){        
+          ArmStatePub.data = "Moving";
+          // 現在の状態をPublish                (1回だけ)
+          pub_arm_state.publish(ArmStatePub);
+        }
+        flag_move = 1;
         break;
       default:
         break;
     }
-    // 現在の状態をPublish
-    pub_arm_state.publish(ArmStatePub);
-
+    
     loop_rate.sleep();
   }
   return 0;
 }
+
 
