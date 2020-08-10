@@ -121,7 +121,7 @@ $(function(){
 
     $('#clear').click(clear);
     $('#send_data').click(sendData);
-
+    $('#stop').click(sendStopMsg);
     $('#pen').click(toolSelectPen);
     $('#eraser').click(toolSelectEraser);
 
@@ -335,6 +335,24 @@ function sendData()
     form.submit();
 }
 
+/**
+ * 停止命令を送信
+ * @returns {undefined}
+ */
+function sendStopMsg()
+{
+    var data = 'stop';
+    var form = document.createElement('form');
+    var request = document.createElement('input');
+    document.body.appendChild(form);
+    //ビーズ配置データを文字列に変換
+    request.name = 'text';
+    request.value = data;
+
+    form.appendChild(request);
+    form.method = 'POST';
+    form.submit();
+}
 
 
 /*
