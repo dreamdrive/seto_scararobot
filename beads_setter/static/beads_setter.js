@@ -345,7 +345,6 @@ function sendStopMsg()
     var form = document.createElement('form');
     var request = document.createElement('input');
     document.body.appendChild(form);
-    //ビーズ配置データを文字列に変換
     request.name = 'text';
     request.value = data;
 

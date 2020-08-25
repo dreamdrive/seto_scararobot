@@ -15,6 +15,7 @@ def index():
         else:
             pub.publish(str(request.form["text"]))
         return render_template('index.html')
+        
 
 
 @app.route("/stop")

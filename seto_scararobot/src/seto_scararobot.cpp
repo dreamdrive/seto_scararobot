@@ -70,7 +70,7 @@ private:
   const int COLOR2_NUM = 29;
   const int COLOR3_NUM = 29;
 
-  //オフセット位置（0〜29)
+  //オフセット位置（-29〜29)
   const int OFFSET_X = 0;
   const int OFFSET_Y = 0;
 
@@ -252,7 +252,7 @@ public:
         {
           while(arm_positions[set_count] == SPACE)
           {
-            if(set_count < (arm_positions.size() - 1))
+            if(set_count <= (arm_positions.size() - 1))
             {
               set_count++;
             }
@@ -270,6 +270,7 @@ public:
           {
             ROS_INFO("CatchBeads");
             step_++;
+            //step_=SetBeads;
           }
           break;
         }
@@ -279,20 +280,20 @@ public:
 
           if(arm_positions[set_count] == COLOR1)
           {
-            arm_position.x = (COLOR1_NUM - beads_color1_num)* DISTANCE;
-            arm_position.y = (COLOR1_ROW - 1) * DISTANCE;
+            arm_position.x = (COLOR1_NUM - beads_color1_num + OFFSET_X)* DISTANCE;
+            arm_position.y = (COLOR1_ROW - 1 + OFFSET_Y) * DISTANCE;
             beads_color1_num--;
           }
           else if(arm_positions[set_count] == COLOR2)
           {
-            arm_position.x = (COLOR2_NUM - beads_color2_num)* DISTANCE;
-            arm_position.y = (COLOR2_ROW - 1) * DISTANCE;
+            arm_position.x = (COLOR2_NUM - beads_color2_num + OFFSET_X)* DISTANCE;
+            arm_position.y = (COLOR2_ROW - 1 + OFFSET_Y) * DISTANCE;
             beads_color2_num--;
           }
           else if(arm_positions[set_count] == COLOR3)
           {
-            arm_position.x = (COLOR3_NUM - beads_color3_num)* DISTANCE;
-            arm_position.y = (COLOR3_ROW - 1) * DISTANCE;
+            arm_position.x = (COLOR3_NUM - beads_color3_num + OFFSET_X)* DISTANCE;
+            arm_position.y = (COLOR3_ROW - 1 + OFFSET_Y) * DISTANCE;
             beads_color3_num--;
           }
           pub_arm_position.publish(arm_position);
@@ -334,10 +335,13 @@ public:
 
         case SetBeads:
         {
-          arm_position.x = (int)(set_count % (int)sqrt(arm_positions.size())) * DISTANCE;
-          arm_position.y = (int)(set_count / sqrt(arm_positions.size())) * DISTANCE;
+          arm_position.x = ((int)(set_count % (int)sqrt(arm_positions.size())) + OFFSET_X) * DISTANCE;
+          arm_position.y = ((int)(set_count / (int)sqrt(arm_positions.size())) + OFFSET_Y) * DISTANCE;
+          //arm_position.x = ((int)(set_count % 29) + OFFSET_X)* DISTANCE;
+          //arm_position.y = ((int)(set_count / 29) + OFFSET_Y) * DISTANCE;
           pub_arm_position.publish(arm_position);
           step_++;
+          step_=CheckFinishTask;
           ROS_INFO("WaitSetBeads");
           break;
         }

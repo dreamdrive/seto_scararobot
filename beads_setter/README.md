@@ -33,6 +33,5 @@ Windows : Ctrl + Fn + F5
 
 Mac : Cmd + Shift + R
 
-Linux : Cmd + Shift + R
+Linux : Cmd + Shift + Rｚ
 ```
-
