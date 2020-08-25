@@ -56,14 +56,14 @@ private:
   //色番号
   //beads_setterのカラーコードと一致させておく
   const int SPACE = 0;
-  const int COLOR1 = 3;
-  const int COLOR2 = 1;
-  const int COLOR3 = 2;
+  const int COLOR1 = 1;
+  const int COLOR2 = 2;
+  const int COLOR3 = 3;
   
   //行番号
-  const int COLOR1_ROW = 27; 
-  const int COLOR2_ROW = 28;
-  const int COLOR3_ROW = 29;
+  const int COLOR1_ROW = 10; 
+  const int COLOR2_ROW = 11;
+  const int COLOR3_ROW = 12;
 
   //ビーズの個数
   const int COLOR1_NUM = 29; 
@@ -71,8 +71,8 @@ private:
   const int COLOR3_NUM = 29;
 
   //オフセット位置（-29〜29)
-  const int OFFSET_X = 0;
-  const int OFFSET_Y = 0;
+  const int OFFSET_X = -29;
+  const int OFFSET_Y = 1;
 
   const double DISTANCE = 5; //ビーズ間の距離（mm）
 
@@ -341,7 +341,8 @@ public:
           //arm_position.y = ((int)(set_count / 29) + OFFSET_Y) * DISTANCE;
           pub_arm_position.publish(arm_position);
           step_++;
-          step_=CheckFinishTask;
+          // デバッグ用かな、先に進めなかったのでコメントアウト
+          // step_=CheckFinishTask;
           ROS_INFO("WaitSetBeads");
           break;
         }
