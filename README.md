@@ -1,6 +1,6 @@
 # seto_scararobot について
 
-## 使い方
+## 準備
 
 ### ビルド
 
@@ -12,6 +12,16 @@ $ git clone https://github.com/dreamdrive/seto_scararobot.git
 $ cd ..
 $ catkin_make
 ```
+
+### docker
+```
+$ cd ~/catkin_ws/src/seto_scararobot
+$ docker build ./ -t seto_scararobot
+$ docker run -p 6080:80 seto_scararobot:latest
+```
+コンテナ起動後、ブラウザ上で操作可能（ http://127.0.0.1:6080/）
+
+## 使い方
 
 ### 使い方1 (joint_state_publisherでrviz上のスカラロボットをスライダを動かせます。)
 
