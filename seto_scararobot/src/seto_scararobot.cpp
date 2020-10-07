@@ -71,8 +71,8 @@ private:
   const int COLOR3_NUM = 29;
 
   //オフセット位置（-29〜29)
-  const int OFFSET_X = 1;
-  const int OFFSET_Y = 1;
+  const int OFFSET_X = 10;
+  const int OFFSET_Y = 10;
 
   const double DISTANCE = 5; //ビーズ間の距離（mm）
 
