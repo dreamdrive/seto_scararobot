@@ -155,6 +155,8 @@ $ roslaunch seto_scararobot move_arm_gazebo.launch
 * 2020/03/20 :  move_arm_gazebo.launch と move_arm_hardware.launch を更新
 * 2020/07/09 :  hardware_interfaceをPositionJointInterfaceに変更
 * 2020/07/16 :  統括プログラムの作成(kawataさん)
+* 2020/10/09 :  ハードの改修に合わせて、STLの更新
+* 2020/10/10 :  setoros_BeadsEEパッケージと統合
 
 ## Author
 
