@@ -104,7 +104,10 @@ $ roslaunch seto_scararobot seto_scara_moveit_gazebo.launch
 ```
 $ roslaunch seto_scararobot move_arm_hardware.launch
 ```
+
 2. webブラウザで[localhost:5000](localhost:5000)にアクセスする
+
+※ 1.のコマンドの代わりに、seto_scararobot.shを実行してもOK、その場合レイテンシタイマーの設定もシェルの中で行います。
 
 ### 使い方11 (gazenoのロボットアームをwebアプリから動かす。【本命】)
 
@@ -157,6 +160,7 @@ $ roslaunch seto_scararobot move_arm_gazebo.launch
 * 2020/07/16 :  統括プログラムの作成(kawataさん)
 * 2020/10/09 :  ハードの改修に合わせて、STLの更新
 * 2020/10/10 :  setoros_BeadsEEパッケージと統合
+* 2020/10/15 :  起動用のシェルスクリプト(seto_scararobot.sh)作成
 
 ## Author
 
