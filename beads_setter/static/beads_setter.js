@@ -29,8 +29,6 @@ var BeadsBitmap = new createjs.Bitmap(BeadsBitmapData.canvas); //ビットマッ
 
 //ビーズ配置データの1次元配列
 var BeadsData = [];
-initBeadsData();
-
 var isBeadsDataDefined = false; //ページロード時にビーズ配置済みフラグ
 
 //カラーパレット
@@ -100,7 +98,11 @@ IndexList['P'] = 24;
 
 var CurrentColor = null; //現在選択中の色
 var CurrentColorId = null; //現在選択中の色ID
-
+var self_received_data = ""
+if (received_data != ""){
+    self_received_data = String(received_data);
+    isBeadsDataDefined = true;
+}
 /**
  * 初期化
  * @returns {undefined}
@@ -115,6 +117,7 @@ $(function(){
     bg.y = 0;
     Stage.addChild(bg);
     Stage.addChild(BeadsBitmap);
+    
     Stage.update();
 
     Stage.addEventListener('click', stageClick);
@@ -124,22 +127,20 @@ $(function(){
     $('#stop').click(sendStopMsg);
     $('#pen').click(toolSelectPen);
     $('#eraser').click(toolSelectEraser);
+    $('#reload').click(reload);
 
     for(var index in ColorList){
         $('#color_select').append('<dd data-color-id="' + ColorList[index]['Id'] + '" class="color_dd" style="background-color: ' + ColorList[index]['Color'] + ';"></dd>');
     }
 
     $('#color_select dd').click(colorSelect);
-
     drawGrid(); //グリッド描画
-
+    initBeadsData();
     if(!is8x8){
         //29x29モードの場合は画像アップロードフォームと29x29用テンプレートを表示する
         $('#image').show();
         $('#template29').show();
     }
-
-    if(isBeadsDataDefined) drawImage(); //アップロードされた画像を描画
 
     $('#pen').css({'background': '#87CEFA'});
 
@@ -157,6 +158,28 @@ function initBeadsData()
     for(var i=0; i<BeadsCount; i++){
         BeadsData.push('0'); //0で無配置状態
     }
+    if (isBeadsDataDefined){
+        for(let i = 0; i < self_received_data.length; i++){
+            if (self_received_data.charAt(i) != "0")
+            {
+                var targetX = BeadsSize * (i % BeadsStageScale);
+                var targetY = BeadsSize * Math.floor(i / BeadsStageScale);
+                BeadsBitmapData.clearRect(targetX, targetY, BeadsSize, BeadsSize);
+                var BeadsHalfSize = Math.floor(BeadsSize / 2);
+                var circle = new createjs.Shape();
+                //circle.graphics.beginFill(CurrentColor).drawCircle(BeadsHalfSize, BeadsHalfSize, BeadsHalfSize);
+                circle.graphics.beginFill(ColorList[self_received_data.charAt(i)-1].Color).drawCircle(BeadsHalfSize, BeadsHalfSize, BeadsHalfSize);
+                circle.x = 0;
+                circle.y = 0;
+                circle.cache(0, 0, BeadsSize, BeadsSize);
+                var mat = new createjs.Matrix2D(1, 0, 0, 1, targetX, targetY);
+                BeadsBitmapData.draw(circle, mat);
+                BeadsData[i] = self_received_data.charAt(i);
+            }
+        }
+    }
+
+    Stage.update();
 }
 
 
@@ -277,7 +300,7 @@ function clear()
 {
 
     if(!confirm('すべてのビーズを削除しますか？')) return;
-
+    self_received_data = "";
     initBeadsData();
     drawGrid();
 
@@ -309,6 +332,31 @@ function toolSelectEraser()
     $('#eraser').css({'background': '#87CEFA'});
 }
 
+function reload()
+{
+    if(self_received_data != "")
+    {
+        for(let i = 0; i < self_received_data.length; i++){
+            if (self_received_data.charAt(i) != "0")
+            {
+                var targetX = BeadsSize * (i % BeadsStageScale);
+                var targetY = BeadsSize * Math.floor(i / BeadsStageScale);
+                BeadsBitmapData.clearRect(targetX, targetY, BeadsSize, BeadsSize);
+                var BeadsHalfSize = Math.floor(BeadsSize / 2);
+                var circle = new createjs.Shape();
+                circle.graphics.beginFill(ColorList[self_received_data.charAt(i)-1].Color).drawCircle(BeadsHalfSize, BeadsHalfSize, BeadsHalfSize);
+                circle.x = 0;
+                circle.y = 0;
+                circle.cache(0, 0, BeadsSize, BeadsSize);
+                var mat = new createjs.Matrix2D(1, 0, 0, 1, targetX, targetY);
+                BeadsBitmapData.draw(circle, mat);
+                BeadsData[i] = self_received_data.charAt(i);
+            }
+        }
+    }
+    Stage.update();
+}
+
 
 
 /**
@@ -323,16 +371,25 @@ function sendData()
     for(var index in BeadsData){
         data += BeadsData[index];
     }
+
+    self_received_data = data;
+
     var form = document.createElement('form');
-    var request = document.createElement('input');
-    document.body.appendChild(form);
-
-    request.name = 'text';
-    request.value = data;
-
-    form.appendChild(request);
     form.method = 'POST';
+    var qs = [{type:'hidden',name:'title',value:'title'},{type:'hidden',name:'data',value:data}];
+    
+    for(var i = 0; i < qs.length; i++) {
+        var ol = qs[i];
+        var request = document.createElement('input');
+        for(var p in ol) {
+            request.setAttribute(p, ol[p]);
+        }
+        form.appendChild(request);
+    }
+    var body = document.getElementsByTagName("body")[0];
+    body.appendChild(form);
     form.submit();
+    body.removeChild(form);
 }
 
 /**
@@ -382,32 +439,39 @@ function onError(e)
 function drawImage()
 {
     var count = 0;
+    if (received_data != "")
+    {
+        for(let i = 0; i < received_data.length; i++){
+            BeadsData[i] = received_data.charAt(i);
+        }
+    
+    }
+    else{
+        for(var y=0; y<BeadsStageScale; y++){
+            for(var x=0; x<BeadsStageScale; x++){
 
-    for(var y=0; y<BeadsStageScale; y++){
-        for(var x=0; x<BeadsStageScale; x++){
+                var targetX = x * BeadsSize;
+                var targetY = y * BeadsSize;
 
-            var targetX = x * BeadsSize;
-            var targetY = y * BeadsSize;
+                var BeadsHalfSize = Math.floor(BeadsSize / 2);
 
-            var BeadsHalfSize = Math.floor(BeadsSize / 2);
+                var circle = new createjs.Shape();
+                circle.graphics.beginFill(ColorList[IndexList[ConvertData[count]]].Color).drawCircle(BeadsHalfSize, BeadsHalfSize, BeadsHalfSize);
+                circle.x = 0;
+                circle.y = 0;
+                circle.cache(0, 0, BeadsSize, BeadsSize);
 
-            var circle = new createjs.Shape();
-            circle.graphics.beginFill(ColorList[IndexList[ConvertData[count]]].Color).drawCircle(BeadsHalfSize, BeadsHalfSize, BeadsHalfSize);
-            circle.x = 0;
-            circle.y = 0;
-            circle.cache(0, 0, BeadsSize, BeadsSize);
+                var mat = new createjs.Matrix2D(1, 0, 0, 1, targetX, targetY);
 
-            var mat = new createjs.Matrix2D(1, 0, 0, 1, targetX, targetY);
+                BeadsBitmapData.draw(circle, mat);
 
-            BeadsBitmapData.draw(circle, mat);
+                setBeads(x, y, ConvertData[count]);
 
-            setBeads(x, y, ConvertData[count]);
+                count ++;
 
-            count ++;
-
+            }
         }
     }
-
 
     Stage.update();
 

@@ -6,7 +6,10 @@
 
         <link href="/static/beads_setter.css" rel="stylesheet" type="text/css">
         <script src="/static/jquery-3.1.0.min.js"></script>
-        <script src="/static/easeljs-0.8.2.min.js"></script>
+        <script type="text/javascript">
+            var received_data = {{posts|tojson}};
+        </script>
+        <script type="text/javascript" src="/static/easeljs-0.8.2.min.js"></script>
         <script src="/static/bitmapdata-1.1.1.min.js"></script>
         <script src="/static/sha_dev.js"></script>
         <script src="/static/beads_setter.js"></script>
@@ -15,7 +18,6 @@
     <body>
 
         <div>
-
             <!-- ビーズセット画面 -->
             <canvas id="beads_canvas" width="500" height="500"></canvas>
 
@@ -37,7 +39,8 @@
                 <button id="clear">全消去</button>
                 <button id="stop">停止</button>
                 <button id="send_data">データ送信</button>
+                <button id="reload">再読み込み</button>
+                
             </div>
-
         </div>
 </body></html>
